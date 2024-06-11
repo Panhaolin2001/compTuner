@@ -213,7 +213,7 @@ class compTuner:
         model = RandomForestRegressor(random_state=self.random)
         model.fit(np.array(inital_indep), np.array(inital_dep))
         rec_size = 0
-        while rec_size < 50:
+        while rec_size < 1:
             model = RandomForestRegressor(random_state=self.random)
             model.fit(np.array(inital_indep), np.array(inital_dep))
             global_best = max(inital_dep)
@@ -221,7 +221,7 @@ class compTuner:
             if all_acc:
                 all_acc = sorted(all_acc)
             neighbors = []
-            for i in range(80000):
+            for i in range(8):
                 x = random.randint(0, 2 ** self.dim)
                 x = self.generate_random_conf(x)
                 if x not in neighbors:

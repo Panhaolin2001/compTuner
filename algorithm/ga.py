@@ -4,9 +4,9 @@ import random
 import numpy as np
 import time
 random.seed(123)
-initial_set = 4
-begin2end = 3
-iters = 100
+initial_set = 100
+begin2end = 1
+iters = 50
 
 from .executor import Executor, LOG_DIR
 
@@ -23,7 +23,7 @@ class GA:
         self.dep = []
         self.times = []
         for x in geneinfo:
-            tmp = self.get_objective_score(x)
+            tmp = self.get_objective_score(x, 100086)
             fitness.append(-1.0 / tmp)
             
         self.pop = [(x, fitness[i]) for i, x in enumerate(geneinfo)]
@@ -78,7 +78,7 @@ class GA:
                 offspring = [random.choice(selectpop) for i in range(2)]
                 crossoff = self.crossoperate(offspring)
                 muteoff = self.mutation(crossoff)
-                fit_muteoff = self.get_objective_score(muteoff)
+                fit_muteoff = self.get_objective_score(muteoff, 10086)
                 nextoff.append((muteoff, -1.0 / fit_muteoff))
             self.pop = nextoff       
             self.pop = sorted(self.pop, key=lambda x:x[1])

@@ -3,7 +3,7 @@ import os
 import random
 import argparse
 
-from algorithm.CompTuner import compTuner
+from algorithm.ga import GA
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Args needed for BOCA tuning compiler.")
@@ -17,26 +17,7 @@ if __name__ == '__main__':
                         help='Specify path to the source file.',
                         required=True, metavar='<directory>')
 
-    # compTuner params
-    parser.add_argument('--c1',
-                        help='Specify the scale of the PSO process (2 by default).',
-                        type=float, default=2, metavar='<num>')
-    parser.add_argument('--c2',
-                        help='Specify the scale of the PSO process (2 by default).',
-                        type=float, default=2, metavar='<num>')
-    parser.add_argument('--w',
-                        help='Specify the scale of the PSO process (0.6 by default).',
-                        type=float, default=0.6, metavar='<num>')
-    parser.add_argument('-i', '--iteration',
-                        help='Number of total instances, including initial sampled ones (60 by default).',
-                        type=int, default=60, metavar='<iteration>')
-    parser.add_argument('--random',
-                        help='Fix <random> for random process and model building.',
-                        type=int, default=456, metavar='<random>')
-                        
     args = parser.parse_args()
-    if args.random:
-        random.seed(args.random)
     from algorithm.executor import Executor, LOG_DIR
 
     if not os.path.exists(LOG_DIR):
@@ -54,22 +35,13 @@ if __name__ == '__main__':
 
     print(len(tuning_list), tuning_list)
 
-    pso_params['dim'] = len(tuning_list)
-    pso_params['get_objective_score'] = e.get_objective_score
-    pso_params['c1'] = args.c1
-    pso_params['c2'] = args.c2
-    pso_params['w'] = args.w
-    pso_params['iteration'] = args.iteration
-    pso_params['random'] = args.random
-#
-#
-    CompTuner = compTuner(**pso_params)
+    GATuner = GA(tuning_list, e.get_objective_score)
     #重复实验次数
-    begin2end = 3
+    begin2end = 1
     stats = []
     times = []
     for _ in range(begin2end):
-        dep, ts = CompTuner.run()
+        dep, ts = GATuner.GA_main()
         print('middle result')
         print(dep)
         stats.append(dep)
@@ -87,7 +59,7 @@ if __name__ == '__main__':
     stat_mean = []
     stat_std = []
     import numpy as np
-    for i in range(args.budget):
+    for i in range(10):
         time_tmp = []
         stat_tmp = []
         for j in range(begin2end):
